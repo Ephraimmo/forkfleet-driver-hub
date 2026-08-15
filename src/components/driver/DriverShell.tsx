@@ -39,7 +39,10 @@ export function DriverShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setPending(queueSize());
-    return onQueueChange(setPending);
+    const unsub = onQueueChange(setPending);
+    return () => {
+      unsub();
+    };
   }, []);
 
   useEffect(() => {
