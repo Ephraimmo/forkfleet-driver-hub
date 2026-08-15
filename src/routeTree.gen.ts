@@ -14,7 +14,11 @@ import { Route as DriverRouteImport } from './routes/_driver'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DriverDeliveriesRouteImport } from './routes/_driver.deliveries'
+import { Route as DriverEarningsRouteImport } from './routes/_driver.earnings'
 import { Route as DriverHomeRouteImport } from './routes/_driver.home'
+import { Route as DriverNotificationsRouteImport } from './routes/_driver.notifications'
+import { Route as DriverProfileRouteImport } from './routes/_driver.profile'
+import { Route as DriverSupportRouteImport } from './routes/_driver.support'
 import { Route as DriverDeliveryOrderIdRouteImport } from './routes/_driver.delivery.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,9 +45,29 @@ const DriverDeliveriesRoute = DriverDeliveriesRouteImport.update({
   path: '/deliveries',
   getParentRoute: () => DriverRoute,
 } as any)
+const DriverEarningsRoute = DriverEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => DriverRoute,
+} as any)
 const DriverHomeRoute = DriverHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => DriverRoute,
+} as any)
+const DriverNotificationsRoute = DriverNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => DriverRoute,
+} as any)
+const DriverProfileRoute = DriverProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DriverRoute,
+} as any)
+const DriverSupportRoute = DriverSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => DriverRoute,
 } as any)
 const DriverDeliveryOrderIdRoute = DriverDeliveryOrderIdRouteImport.update({
@@ -57,7 +81,11 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/deliveries': typeof DriverDeliveriesRoute
+  '/earnings': typeof DriverEarningsRoute
   '/home': typeof DriverHomeRoute
+  '/notifications': typeof DriverNotificationsRoute
+  '/profile': typeof DriverProfileRoute
+  '/support': typeof DriverSupportRoute
   '/delivery/$orderId': typeof DriverDeliveryOrderIdRoute
 }
 export interface FileRoutesByTo {
@@ -65,7 +93,11 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/deliveries': typeof DriverDeliveriesRoute
+  '/earnings': typeof DriverEarningsRoute
   '/home': typeof DriverHomeRoute
+  '/notifications': typeof DriverNotificationsRoute
+  '/profile': typeof DriverProfileRoute
+  '/support': typeof DriverSupportRoute
   '/delivery/$orderId': typeof DriverDeliveryOrderIdRoute
 }
 export interface FileRoutesById {
@@ -75,7 +107,11 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/_driver/deliveries': typeof DriverDeliveriesRoute
+  '/_driver/earnings': typeof DriverEarningsRoute
   '/_driver/home': typeof DriverHomeRoute
+  '/_driver/notifications': typeof DriverNotificationsRoute
+  '/_driver/profile': typeof DriverProfileRoute
+  '/_driver/support': typeof DriverSupportRoute
   '/_driver/delivery/$orderId': typeof DriverDeliveryOrderIdRoute
 }
 export interface FileRouteTypes {
@@ -85,7 +121,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/deliveries'
+    | '/earnings'
     | '/home'
+    | '/notifications'
+    | '/profile'
+    | '/support'
     | '/delivery/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -93,7 +133,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/deliveries'
+    | '/earnings'
     | '/home'
+    | '/notifications'
+    | '/profile'
+    | '/support'
     | '/delivery/$orderId'
   id:
     | '__root__'
@@ -102,7 +146,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/_driver/deliveries'
+    | '/_driver/earnings'
     | '/_driver/home'
+    | '/_driver/notifications'
+    | '/_driver/profile'
+    | '/_driver/support'
     | '/_driver/delivery/$orderId'
   fileRoutesById: FileRoutesById
 }
@@ -150,11 +198,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DriverDeliveriesRouteImport
       parentRoute: typeof DriverRoute
     }
+    '/_driver/earnings': {
+      id: '/_driver/earnings'
+      path: '/earnings'
+      fullPath: '/earnings'
+      preLoaderRoute: typeof DriverEarningsRouteImport
+      parentRoute: typeof DriverRoute
+    }
     '/_driver/home': {
       id: '/_driver/home'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof DriverHomeRouteImport
+      parentRoute: typeof DriverRoute
+    }
+    '/_driver/notifications': {
+      id: '/_driver/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof DriverNotificationsRouteImport
+      parentRoute: typeof DriverRoute
+    }
+    '/_driver/profile': {
+      id: '/_driver/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof DriverProfileRouteImport
+      parentRoute: typeof DriverRoute
+    }
+    '/_driver/support': {
+      id: '/_driver/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof DriverSupportRouteImport
       parentRoute: typeof DriverRoute
     }
     '/_driver/delivery/$orderId': {
@@ -169,13 +245,21 @@ declare module '@tanstack/react-router' {
 
 interface DriverRouteChildren {
   DriverDeliveriesRoute: typeof DriverDeliveriesRoute
+  DriverEarningsRoute: typeof DriverEarningsRoute
   DriverHomeRoute: typeof DriverHomeRoute
+  DriverNotificationsRoute: typeof DriverNotificationsRoute
+  DriverProfileRoute: typeof DriverProfileRoute
+  DriverSupportRoute: typeof DriverSupportRoute
   DriverDeliveryOrderIdRoute: typeof DriverDeliveryOrderIdRoute
 }
 
 const DriverRouteChildren: DriverRouteChildren = {
   DriverDeliveriesRoute: DriverDeliveriesRoute,
+  DriverEarningsRoute: DriverEarningsRoute,
   DriverHomeRoute: DriverHomeRoute,
+  DriverNotificationsRoute: DriverNotificationsRoute,
+  DriverProfileRoute: DriverProfileRoute,
+  DriverSupportRoute: DriverSupportRoute,
   DriverDeliveryOrderIdRoute: DriverDeliveryOrderIdRoute,
 }
 
