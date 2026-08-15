@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import maplibregl, { type Map as MlMap } from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
+import type { Map as MlMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 export interface MapMarker {
@@ -14,7 +15,7 @@ const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
 export default function DeliveryMap({ markers, className }: { markers: MapMarker[]; className?: string }) {
   const container = useRef<HTMLDivElement | null>(null);
   const map = useRef<MlMap | null>(null);
-  const markerRefs = useRef<maplibregl.Marker[]>([]);
+  const markerRefs = useRef<Marker[]>([]);
 
   useEffect(() => {
     if (!container.current || map.current) return;
@@ -25,7 +26,7 @@ export default function DeliveryMap({ markers, className }: { markers: MapMarker
       zoom: 12,
       attributionControl: { compact: true },
     });
-    map.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    map.current?.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     return () => {
       map.current?.remove();
       map.current = null;
