@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DriverRouteImport } from './routes/_driver'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DriverDeliveriesRouteImport } from './routes/_driver.deliveries'
 import { Route as DriverHomeRouteImport } from './routes/_driver.home'
+import { Route as DriverDeliveryOrderIdRouteImport } from './routes/_driver.delivery.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,9 +36,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DriverDeliveriesRoute = DriverDeliveriesRouteImport.update({
+  id: '/deliveries',
+  path: '/deliveries',
+  getParentRoute: () => DriverRoute,
+} as any)
 const DriverHomeRoute = DriverHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => DriverRoute,
+} as any)
+const DriverDeliveryOrderIdRoute = DriverDeliveryOrderIdRouteImport.update({
+  id: '/delivery/$orderId',
+  path: '/delivery/$orderId',
   getParentRoute: () => DriverRoute,
 } as any)
 
@@ -44,13 +56,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/deliveries': typeof DriverDeliveriesRoute
   '/home': typeof DriverHomeRoute
+  '/delivery/$orderId': typeof DriverDeliveryOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/deliveries': typeof DriverDeliveriesRoute
   '/home': typeof DriverHomeRoute
+  '/delivery/$orderId': typeof DriverDeliveryOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -58,20 +74,36 @@ export interface FileRoutesById {
   '/_driver': typeof DriverRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/_driver/deliveries': typeof DriverDeliveriesRoute
   '/_driver/home': typeof DriverHomeRoute
+  '/_driver/delivery/$orderId': typeof DriverDeliveryOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/forgot-password' | '/login' | '/home'
+  fullPaths:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/deliveries'
+    | '/home'
+    | '/delivery/$orderId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/forgot-password' | '/login' | '/home'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/deliveries'
+    | '/home'
+    | '/delivery/$orderId'
   id:
     | '__root__'
     | '/'
     | '/_driver'
     | '/forgot-password'
     | '/login'
+    | '/_driver/deliveries'
     | '/_driver/home'
+    | '/_driver/delivery/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -111,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_driver/deliveries': {
+      id: '/_driver/deliveries'
+      path: '/deliveries'
+      fullPath: '/deliveries'
+      preLoaderRoute: typeof DriverDeliveriesRouteImport
+      parentRoute: typeof DriverRoute
+    }
     '/_driver/home': {
       id: '/_driver/home'
       path: '/home'
@@ -118,15 +157,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DriverHomeRouteImport
       parentRoute: typeof DriverRoute
     }
+    '/_driver/delivery/$orderId': {
+      id: '/_driver/delivery/$orderId'
+      path: '/delivery/$orderId'
+      fullPath: '/delivery/$orderId'
+      preLoaderRoute: typeof DriverDeliveryOrderIdRouteImport
+      parentRoute: typeof DriverRoute
+    }
   }
 }
 
 interface DriverRouteChildren {
+  DriverDeliveriesRoute: typeof DriverDeliveriesRoute
   DriverHomeRoute: typeof DriverHomeRoute
+  DriverDeliveryOrderIdRoute: typeof DriverDeliveryOrderIdRoute
 }
 
 const DriverRouteChildren: DriverRouteChildren = {
+  DriverDeliveriesRoute: DriverDeliveriesRoute,
   DriverHomeRoute: DriverHomeRoute,
+  DriverDeliveryOrderIdRoute: DriverDeliveryOrderIdRoute,
 }
 
 const DriverRouteWithChildren =
