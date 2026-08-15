@@ -520,9 +520,9 @@ export function subscribeOrderChat(
   orderId: string,
   cb: (m: { id: string; sender: string; body: string; created_at: string }[]) => void,
 ) {
-  return subscribe<Record<string, { id: string; sender: string; body: string; created_at: string }>>(
-    paths.chat(orderId),
-    (all) => cb(toArray(all).sort((a, b) => (a.created_at > b.created_at ? 1 : -1))),
+  type Msg = { id: string; sender: string; body: string; created_at: string };
+  return subscribe<Record<string, Msg>>(paths.chat(orderId), (all) =>
+    cb(toArray<Msg>(all).sort((a, b) => (a.created_at > b.created_at ? 1 : -1))),
   );
 }
 

@@ -179,8 +179,8 @@ export interface DeliveryEvent {
   event_id: string;
   order_id: string;
   driver_id: string;
-  restaurant_id?: string;
-  branch_id?: string;
+  restaurant_id?: string | undefined;
+  branch_id?: string | undefined;
   event_type: DeliveryEventType;
   status?: DeliveryStatus;
   timestamp: string;
@@ -216,7 +216,7 @@ export interface Earning {
   id: string;
   driver_id: string;
   order_id: string;
-  order_number?: string;
+  order_number?: string | undefined;
   base_amount: number;
   tip: number;
   bonus?: number;
