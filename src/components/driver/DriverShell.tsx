@@ -1,6 +1,17 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Package, Wallet, Bell, User, WifiOff, Navigation, CloudUpload } from "lucide-react";
+import {
+  Home,
+  Package,
+  Wallet,
+  Bell,
+  User,
+  WifiOff,
+  Navigation,
+  CloudUpload,
+  Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
 import { useAuthDriver } from "@/hooks/useAuthDriver";
 import { useConnectivity } from "@/hooks/useConnectivity";
 import { useLocationTracking } from "@/hooks/useLocationTracking";
@@ -9,7 +20,9 @@ import { useAppStore } from "@/stores/appStore";
 import { onQueueChange, queueSize, flushQueue } from "@/lib/offlineQueue";
 import { subscribeNotifications } from "@/lib/repo";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+
 
 const NAV = [
   { to: "/home", label: "Home", icon: Home },
