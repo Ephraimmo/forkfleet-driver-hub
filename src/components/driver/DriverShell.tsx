@@ -73,16 +73,37 @@ export function DriverShell({ children }: { children: ReactNode }) {
         <div className="surface-card max-w-md space-y-3 p-6 text-center">
           <h1 className="text-xl font-bold">No driver profile linked</h1>
           <p className="text-sm text-muted-foreground">
-            Your account signed in successfully, but no ForkFleet driver profile matches it. Ask
-            your operations manager to create or link your driver record in the Management Console.
+            Your account signed in successfully, but no ForkFleet driver profile matches it. Create
+            your profile now so it appears in the Management Console, or ask operations to link an
+            existing driver record.
           </p>
-          <Link to="/login" className="text-sm font-semibold text-primary underline">
+          <Button
+            className="w-full"
+            disabled={creatingProfile}
+            onClick={async () => {
+              if (!user) return;
+              setCreatingProfile(true);
+              try {
+                await createMissingProfile();
+                toast.success("Driver profile created");
+              } catch (e) {
+                toast.error((e as Error).message);
+              } finally {
+                setCreatingProfile(false);
+              }
+            }}
+          >
+            {creatingProfile && <Loader2 className="mr-2 size-4 animate-spin" />} Create my driver
+            profile
+          </Button>
+          <Link to="/login" className="block text-sm font-semibold text-primary underline">
             Back to sign in
           </Link>
         </div>
       </div>
     );
   }
+
 
   const activeDelivery = active[0];
 
