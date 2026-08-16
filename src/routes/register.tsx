@@ -61,8 +61,15 @@ function RegisterPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password.length < 6) return toast.error("Password must be at least 6 characters");
-    if (form.password !== form.confirm) return toast.error("Passwords do not match");
+    if (form.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (form.password !== form.confirm) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     setBusy(true);
     try {
       const { confirm: _confirm, ...input } = form;
