@@ -136,6 +136,20 @@ export function AuthDriverProvider({ children }: { children: ReactNode }) {
         await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
         await signInWithEmailAndPassword(auth, email.trim(), password);
       },
+      register: async ({ password, ...input }) => {
+        const auth = getFirebaseAuth();
+        await setPersistence(auth, browserLocalPersistence);
+        const cred = await createUserWithEmailAndPassword(auth, input.email.trim(), password);
+        await updateProfile(cred.user, { displayName: input.full_name.trim() });
+        const created = await registerDriverProfile(cred.user.uid, input);
+        setDriver(created);
+        setProfileMissing(false);
+        sendEmailVerification(cred.user).catch((e) =>
+          logError("AUTH", "verification email failed", e),
+        );
+        log("AUTH", `driver registered: ${cred.user.uid}`);
+      },
+
       logout: async () => {
         await signOut(getFirebaseAuth());
       },
