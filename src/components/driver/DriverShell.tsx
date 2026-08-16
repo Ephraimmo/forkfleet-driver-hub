@@ -33,7 +33,8 @@ const NAV = [
 ] as const;
 
 export function DriverShell({ children }: { children: ReactNode }) {
-  const { ready, user, driver, profileMissing } = useAuthDriver();
+  const { ready, user, driver, profileMissing, createMissingProfile } = useAuthDriver();
+  const [creatingProfile, setCreatingProfile] = useState(false);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const connected = useAppStore((s) => s.connected);
