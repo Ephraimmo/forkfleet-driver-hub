@@ -9,6 +9,8 @@ import {
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   signOut,
   sendPasswordResetEmail,
   sendEmailVerification,
@@ -21,8 +23,10 @@ import { getFirebaseAuth } from "@/lib/firebase";
 import {
   findDriverForUser,
   linkDriverToAuthUser,
+  registerDriverProfile,
   subscribe,
   subscribeDriverAssignments,
+  type DriverRegistrationInput,
 } from "@/lib/repo";
 import { paths } from "@/lib/paths";
 import { log, logError } from "@/lib/log";
@@ -37,10 +41,12 @@ interface AuthDriverState {
   profileMissing: boolean;
   error: string | null;
   login: (email: string, password: string, remember: boolean) => Promise<void>;
+  register: (input: DriverRegistrationInput & { password: string }) => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   resendVerification: () => Promise<void>;
 }
+
 
 const Ctx = createContext<AuthDriverState | null>(null);
 
