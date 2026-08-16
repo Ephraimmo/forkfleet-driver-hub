@@ -9,6 +9,8 @@ import {
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   signOut,
   sendPasswordResetEmail,
   sendEmailVerification,
@@ -21,8 +23,10 @@ import { getFirebaseAuth } from "@/lib/firebase";
 import {
   findDriverForUser,
   linkDriverToAuthUser,
+  registerDriverProfile,
   subscribe,
   subscribeDriverAssignments,
+  type DriverRegistrationInput,
 } from "@/lib/repo";
 import { paths } from "@/lib/paths";
 import { log, logError } from "@/lib/log";
@@ -37,10 +41,13 @@ interface AuthDriverState {
   profileMissing: boolean;
   error: string | null;
   login: (email: string, password: string, remember: boolean) => Promise<void>;
+  register: (input: DriverRegistrationInput & { password: string }) => Promise<void>;
+  createMissingProfile: () => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   resendVerification: () => Promise<void>;
 }
+
 
 const Ctx = createContext<AuthDriverState | null>(null);
 
@@ -129,6 +136,31 @@ export function AuthDriverProvider({ children }: { children: ReactNode }) {
         const auth = getFirebaseAuth();
         await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
         await signInWithEmailAndPassword(auth, email.trim(), password);
+      },
+      register: async ({ password, ...input }) => {
+        const auth = getFirebaseAuth();
+        await setPersistence(auth, browserLocalPersistence);
+        const cred = await createUserWithEmailAndPassword(auth, input.email.trim(), password);
+        await updateProfile(cred.user, { displayName: input.full_name.trim() });
+        const created = await registerDriverProfile(cred.user.uid, input);
+        setDriver(created);
+        setProfileMissing(false);
+        sendEmailVerification(cred.user).catch((e) =>
+          logError("AUTH", "verification email failed", e),
+        );
+        log("AUTH", `driver registered: ${cred.user.uid}`);
+      },
+
+      createMissingProfile: async () => {
+        const u = getFirebaseAuth().currentUser;
+        if (!u) throw new Error("You are not signed in.");
+        const created = await registerDriverProfile(u.uid, {
+          full_name: u.displayName || (u.email ?? "").split("@")[0] || "Driver",
+          email: u.email ?? "",
+          phone: u.phoneNumber ?? "",
+        });
+        setDriver(created);
+        setProfileMissing(false);
       },
       logout: async () => {
         await signOut(getFirebaseAuth());

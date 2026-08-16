@@ -541,3 +541,72 @@ export async function loadRestaurant(restaurantId: string): Promise<Restaurant |
 export function subscribeRestaurants(cb: (r: Record<string, Restaurant>) => void) {
   return subscribe<Record<string, Restaurant>>(paths.restaurants, (all) => cb(all ?? {}));
 }
+
+/* ------------------------------------------------------------- onboarding */
+
+export interface DriverRegistrationInput {
+  full_name: string;
+  email: string;
+  phone: string;
+  city?: string;
+  vehicle_type?: string;
+  vehicle_plate?: string;
+  license_number?: string;
+}
+
+/**
+ * Create the driver profile for a freshly registered Firebase user.
+ * Written at /drivers/{uid} with every field the Management Console lists on,
+ * so the record shows up in admin driver lists in real time.
+ */
+export async function registerDriverProfile(uid: string, input: DriverRegistrationInput): Promise<Driver> {
+  const existing = await findDriverForUser(uid, input.email);
+  if (existing) {
+    if (existing.user_id !== uid) await linkDriverToAuthUser(existing.id, uid);
+    return existing;
+  }
+
+  const ts = nowIso();
+  const driver: Driver = {
+    id: uid,
+    user_id: uid,
+    full_name: input.full_name.trim(),
+    email: input.email.trim().toLowerCase(),
+    phone: input.phone.trim(),
+    city: input.city?.trim() || "",
+    status: "offline",
+    is_active: true,
+    is_deleted: false,
+    is_verified: false,
+    rating: 0,
+    total_deliveries: 0,
+    wallet_balance: 0,
+    vehicle_type: input.vehicle_type || "motorbike",
+    vehicle_plate: input.vehicle_plate?.trim() || "",
+    license_number: input.license_number?.trim() || null,
+    current_latitude: null,
+    current_longitude: null,
+    photo_url: null,
+    created_at: ts,
+    updated_at: ts,
+    last_online_at: null,
+    last_offline_at: null,
+  };
+
+  // Extra compatibility fields consumed by the Management Console driver list.
+  const record = {
+    ...driver,
+    name: driver.full_name,
+    driver_id: uid,
+    role: "driver",
+    is_online: false,
+    is_available: false,
+    approval_status: "pending",
+    onboarding_source: "driver_app",
+    registered_at: ts,
+  };
+
+  await set(ref(getDb(), paths.driver(uid)), record);
+  log("AUTH", `driver profile created for ${uid}`);
+  return driver;
+}
