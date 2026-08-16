@@ -94,10 +94,13 @@ function LoginPage() {
           </Link>
         </form>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Driver accounts are created by ForkFleet operations. Contact your manager if you cannot
-          sign in.
+        <p className="text-center text-sm text-muted-foreground">
+          New driver?{" "}
+          <Link to="/register" className="font-semibold text-primary">
+            Create an account
+          </Link>
         </p>
+
       </div>
     </div>
   );
